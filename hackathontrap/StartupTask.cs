@@ -16,10 +16,10 @@ namespace hackathontrap
     public sealed class StartupTask : IBackgroundTask
     {
         private BackgroundTaskDeferral _deferral;
-        private string _deviceId = "hackathontrap";
-        private string _deviceKey = "BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=";
-        private string _ioTHubHostName = "iothubhackathon.azure-devices.net";
-                
+        private static string _deviceId = "hackathontrap";
+        private static string _deviceKey = "BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=";
+        private static string _ioTHubHostName = "iothubhackathon.azure-devices.net";
+
         public void Run(IBackgroundTaskInstance taskInstance)
         {
             _deferral = taskInstance.GetDeferral();
@@ -30,26 +30,26 @@ namespace hackathontrap
 
         static async Task ReceiveCommandLoop(CancellationToken ct)
         {
-                var deviceClient = GetDeviceClient();
-                
-                while (!ct.IsCancellationRequested)
-                {
-                    Message receivedMessage = await Deviceclient.ReceiveAsync();
-                    
-                    if (receivedMessage == null) continue;
-                    
-                    var messageText = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-                    
-                    //TODO: perform some action based on message
-                    
-                    await Deviceclient.CompleteAsync(receivedMessage);
-                }
+            var deviceClient = GetDeviceClient();
+
+            while (!ct.IsCancellationRequested)
+            {
+                Message receivedMessage = await deviceClient.ReceiveAsync();
+
+                if (receivedMessage == null) continue;
+
+                var messageText = Encoding.ASCII.GetString(receivedMessage.GetBytes());
+
+                //TODO: perform some action based on message
+
+                await deviceClient.CompleteAsync(receivedMessage);
+            }
         }
 
         static async Task TelemetrySendLoop(CancellationToken ct)
         {
             try
-            {                
+            {
                 var deviceClient = GetDeviceClient();
 
                 while (!ct.IsCancellationRequested)
@@ -61,7 +61,7 @@ namespace hackathontrap
                         Temperature = 34.2,
                         ExternalTemperature = 38.7,
                         Humidity = 37.7,
-                        Timestamp = Datetime.Now
+                        Timestamp = DateTime.Now
                     };
 
                     // to Json
@@ -69,7 +69,7 @@ namespace hackathontrap
                     // to device message
                     var message = new Message(Encoding.UTF8.GetBytes(messageJson));
 
-                    await Deviceclient.SendEventAsync(message);
+                    await deviceClient.SendEventAsync(message);
                     await Task.Delay(200);
                 }
             }
@@ -78,17 +78,17 @@ namespace hackathontrap
                 var message = ex.Message;
             }
         }
-        
+
         static DeviceClient GetDeviceClient()
         {
-                // Generate the symmetric key
-                var authMethod = new DeviceAuthenticationWithRegistrySymmetricKey(_deviceId, _deviceKey);
+            // Generate the symmetric key
+            var authMethod = new DeviceAuthenticationWithRegistrySymmetricKey(_deviceId, _deviceKey);
 
-                // Build the connection string
-                var connecitonString = IotHubConnectionStringBuilder.Create(_ioTHubHostName, authMethod).ToString();
-                var deviceClient = DeviceClient.CreateFromConnectionString("HostName=iothubhackathon.azure-devices.net;DeviceId=hackathontrap;SharedAccessKey=BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=", TransportType.Http1);
-                
-                return deviceClient
+            // Build the connection string
+            var connecitonString = IotHubConnectionStringBuilder.Create(_ioTHubHostName, authMethod).ToString();
+            var deviceClient = DeviceClient.CreateFromConnectionString("HostName=iothubhackathon.azure-devices.net;DeviceId=hackathontrap;SharedAccessKey=BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=", TransportType.Http1);
+
+            return deviceClient;
         }
     }
 }
