@@ -24,8 +24,13 @@ namespace hackathontrap_receiver
         private const int _buttonPin = 4;
         private GpioPin _button;
 
+        private const int _ledPin = 4;
+        private GpioPin _led;
+
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
+            SetupLedPin();
+
             var cts = new CancellationTokenSource();
             try
             {
@@ -36,6 +41,21 @@ namespace hackathontrap_receiver
                 var message = ex.Message;
             }
             
+        }
+
+        private void SetupLedPin()
+        {
+            var controller = GpioController.GetDefault();
+            _led = controller.OpenPin(_ledPin);
+            _led.SetDriveMode(GpioPinDriveMode.Output);
+        }
+        private void TurnLightOn()
+        {
+            _led.Write(GpioPinValue.High);
+        }
+        private void TurnLightOff()
+        {
+            _led.Write(GpioPinValue.Low);
         }
 
         static async Task ReceiveCommandLoop(CancellationToken ct)
