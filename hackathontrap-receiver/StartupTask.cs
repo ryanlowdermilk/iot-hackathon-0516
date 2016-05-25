@@ -27,7 +27,15 @@ namespace hackathontrap_receiver
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             var cts = new CancellationTokenSource();
-            await ReceiveCommandLoop(cts.Token);
+            try
+            {
+                await ReceiveCommandLoop(cts.Token);
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+            
         }
 
         static async Task ReceiveCommandLoop(CancellationToken ct)
