@@ -16,9 +16,10 @@ namespace hackathontrap_receiver
 
     public sealed class StartupTask : IBackgroundTask
     {
+
         private BackgroundTaskDeferral _deferral;
-        private static string _deviceId = "hackathontrap";
-        private static string _deviceKey = "BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=";
+        private static string _deviceId = "receiver";
+        private static string _deviceKey = "/7pZKSWEiSNI/2RYmzqzlEndQQGDB9Zh6QnWTvHvyuY=";
         private static string _ioTHubHostName = "iothubhackathon.azure-devices.net";
         private const int _buttonPin = 4;
         private GpioPin _button;
