@@ -26,6 +26,7 @@ namespace hackathontrap
             var cts = new CancellationTokenSource();
             var taskSending = TelemetrySendLoop(cts.Token);
             var taskReceive = ReceiveCommandLoop(cts.Token);
+
         }
 
         static async Task ReceiveCommandLoop(CancellationToken ct)
