@@ -96,31 +96,7 @@ namespace hackathontrap
                 var message = new Message(Encoding.UTF8.GetBytes(messageJson));
                 await deviceClient.SendEventAsync(message);
 
-                /*
-                while (!ct.IsCancellationRequested)
-                {
-
-                    var messageObject = new
-                    {
-                        DeviceID = _deviceId,
-                        Temperature = 34.2,
-                        ExternalTemperature = 38.7,
-                        Humidity = 37.7,
-                        Timestamp = DateTime.Now
-                    };
-
-                    // to Json
-                    var messageJson = JsonConvert.SerializeObject(messageObject);
-                    // to device message
-                    var message = new Message(Encoding.UTF8.GetBytes(messageJson));
-
-                    await deviceClient.SendEventAsync(message);
-                    Random rand = new Random();
-                    var randomInterval = rand.Next(15000, 30000);
-                    await Task.Delay(randomInterval);
-                    
-                }
-                */
+                
             }
             catch (Exception ex)
             {
