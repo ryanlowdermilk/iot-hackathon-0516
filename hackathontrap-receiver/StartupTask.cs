@@ -32,7 +32,15 @@ namespace hackathontrap_receiver
             SetupLedPin();
 
             var cts = new CancellationTokenSource();
-            await ReceiveCommandLoop(cts.Token);
+            try
+            {
+                await ReceiveCommandLoop(cts.Token);
+            }
+            catch (Exception ex)
+            {
+                var message = ex.Message;
+            }
+            
         }
 
         private void SetupLedPin()
@@ -75,8 +83,7 @@ namespace hackathontrap_receiver
 
             // Build the connection string
             var connecitonString = IotHubConnectionStringBuilder.Create(_ioTHubHostName, authMethod).ToString();
-            var deviceClient = DeviceClient.CreateFromConnectionString("HostName=iothubhackathon.azure-devices.net;DeviceId=hackathontrap;SharedAccessKey=BaBrZjE2nnpUIQ+QiG9rJVy4zWhdNmaqw9DrckrM05s=", TransportType.Http1);
-
+            var deviceClient = DeviceClient.CreateFromConnectionString("HostName=iothubhackathon.azure-devices.net;DeviceId=receiver;SharedAccessKey=/7pZKSWEiSNI/2RYmzqzlEndQQGDB9Zh6QnWTvHvyuY=", TransportType.Http1);
             return deviceClient;
         }
     }
